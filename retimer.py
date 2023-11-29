@@ -69,7 +69,7 @@ class Timer:
         """
         :return: Seconds to last tick
         """
-        return self.end - self.start
+        return self.end - get_ctime_s()
 
 
 class ReTimer:
