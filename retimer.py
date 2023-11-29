@@ -6,7 +6,7 @@ import re
 import asyncio
 
 from time import time
-from typing import List, Union, Callable
+from typing import List, Union, Callable, Optional
 
 
 DONE = "DONE"
@@ -14,6 +14,7 @@ TICKING = "TICKING"
 PAUSE = "PAUSE"
 
 TIME_PATTERN = re.compile(r'^(\d+d)?:?(\d+h)?:?(\d+m)?$')
+TIMING_PATTERN = re.compile(r'^(\d+d)?:?(\d+h)?:?(\d+m)?-[^/]*$')
 TIME_UNITS = {"d": 24 * 60 * 60, "h": 60 * 60, "m": 60}
 
 
@@ -24,14 +25,14 @@ def get_ctime_s():
     return int(time())
 
 
-def validate_time(strtime: str) -> bool:
-    """Validates time string with pattern"""
-    return bool(TIME_PATTERN.match(strtime))
+def validate(string: str, pattern: re.Pattern) -> bool:
+    """Validates string with pattern"""
+    return bool(pattern.match(string))
 
 
 def time_to_secs(strtime: str) -> int:
     """converts time string to seconds"""
-    if not validate_time(strtime):
+    if not validate(strtime, TIME_PATTERN):
         raise ValueError("strtime param is incorrect.")
     secs = 0
     for elem in strtime.split(":"):
@@ -45,7 +46,7 @@ class Timer:
     """
     Simple timer class
     """
-    def __init__(self, name: str, seconds: int, callback: Callable):
+    def __init__(self, name: str, seconds: int, callback: Callable, timings: Optional[dict] = None):
         """
         :param str name: timer name
         :param int seconds: positive int of seconds
@@ -56,6 +57,7 @@ class Timer:
         self.seconds = seconds
         self.start = get_ctime_s()
         self.end = self.start + self.seconds
+        self._timings = timings
         self._callback = callback
 
     @property
