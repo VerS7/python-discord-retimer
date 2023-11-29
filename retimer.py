@@ -12,6 +12,7 @@ from typing import List, Union, Callable
 
 DONE = "DONE"
 TICKING = "TICKING"
+PAUSE = "PAUSE"
 
 TIME_PATTERN = re.compile(r'^(\d+d)?:?(\d+h)?:?(\d+m)?$')
 TIME_UNITS = {"d": 24 * 60 * 60, "h": 60 * 60, "m": 60}
@@ -100,7 +101,9 @@ class ReTimer:
                 continue
 
             for timer in self._queue:
-                timer.tick(self._td)
+                if timer.state != PAUSE:
+                    timer.tick(self._td)
+
                 if timer.state == DONE:
                     self._queue.remove(timer)
 
