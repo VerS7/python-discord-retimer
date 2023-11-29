@@ -1,14 +1,13 @@
 """
-retimer
-
-!WARNING!
-ReTimer ticks linked on async sleep.
-So it seems to be not very accurate to real time!
+ReTimer
+Ticks linked to real time from epoch
 """
 import re
 import asyncio
 
+from time import time
 from typing import List, Union, Callable
+
 
 DONE = "DONE"
 TICKING = "TICKING"
@@ -16,6 +15,13 @@ PAUSE = "PAUSE"
 
 TIME_PATTERN = re.compile(r'^(\d+d)?:?(\d+h)?:?(\d+m)?$')
 TIME_UNITS = {"d": 24 * 60 * 60, "h": 60 * 60, "m": 60}
+
+
+def get_ctime_s():
+    """
+    :return: Current time from epoch in seconds
+    """
+    return int(time())
 
 
 def validate_time(strtime: str) -> bool:
@@ -48,14 +54,13 @@ class Timer:
         self.name = name
         self.state = TICKING
         self._seconds = seconds
+        self._start = get_ctime_s()
+        self._end = self._start + self._seconds
         self._callback = callback
 
-    def tick(self, n: int):
-        """
-        :param int n: positive seconds to tick
-        """
-        self._seconds -= n
-        if self._seconds <= 0:
+    def tick(self):
+        """Tick timer."""
+        if self._end <= get_ctime_s():
             self.state = DONE
         self._callback(self.name, self.state)
 
@@ -102,7 +107,7 @@ class ReTimer:
 
             for timer in self._queue:
                 if timer.state != PAUSE:
-                    timer.tick(self._td)
+                    timer.tick()
 
                 if timer.state == DONE:
                     self._queue.remove(timer)
@@ -117,4 +122,3 @@ class ReTimer:
             event_loop = asyncio.get_event_loop()
 
         event_loop.run_until_complete(self._loop())
-
