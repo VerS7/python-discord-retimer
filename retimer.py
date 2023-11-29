@@ -6,7 +6,7 @@ import re
 import asyncio
 
 from time import time
-from typing import List, Union, Callable, Optional
+from typing import List, Union, Callable, Optional, Dict
 
 
 DONE = "DONE"
@@ -28,6 +28,20 @@ def get_ctime_s():
 def validate(string: str, pattern: re.Pattern) -> bool:
     """Validates string with pattern"""
     return bool(pattern.match(string))
+
+
+def str_to_timings(strtimings: str) -> Dict[int, str]:
+    """
+    :param str strtimings: str with timings like 1h:-an hour, 3h:30m-A lot of time
+    :return Dict[int, str]: dict of seconds and timing descriptions
+    """
+    timings = {}
+    for timing in strtimings.split(", "):
+        if validate(timing, TIMING_PATTERN) is False:
+            raise ValueError("Timings string is incorrect.")
+        strtime, description = timing.split("-")
+        timings[time_to_secs(strtime)] = description
+    return timings
 
 
 def time_to_secs(strtime: str) -> int:
