@@ -58,18 +58,18 @@ class Timer:
         self.end = self.start + self.seconds
         self._callback = callback
 
-    def tick(self):
-        """Tick timer."""
-        if self.end <= get_ctime_s():
-            self.state = DONE
-        self._callback(self.name, self.state)
-
     @property
     def last(self):
         """
         :return: Seconds to last tick
         """
         return self.end - get_ctime_s()
+
+    def tick(self):
+        """Tick timer."""
+        if self.end <= get_ctime_s():
+            self.state = DONE
+        self._callback(self.name, self.state)
 
 
 class ReTimer:
