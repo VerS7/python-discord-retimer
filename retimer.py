@@ -96,6 +96,7 @@ class ReTimer:
     async def _loop(self):
         while True:
             if len(self._queue) == 0:  # Skip if no timers in queue
+                await asyncio.sleep(self._td)
                 continue
 
             for timer in self._queue:
