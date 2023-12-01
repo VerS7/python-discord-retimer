@@ -8,7 +8,6 @@ import asyncio
 from time import time
 from typing import List, Union, Callable, Optional, Dict
 
-
 DONE = "DONE"
 TICKING = "TICKING"
 PAUSE = "PAUSE"
@@ -60,11 +59,14 @@ class Timer:
     """
     Simple timer class
     """
-    def __init__(self, name: str, seconds: int, callback: Callable, timings: Optional[dict] = None):
+
+    def __init__(self, name: str, seconds: int,
+                 callback: Callable[[str, str, Union[str, None]], Optional],
+                 timings: Optional[dict] = None):
         """
         :param str name: timer name
         :param int seconds: positive int of seconds
-        :param Callable callback: callback(name, state) function to be called on every tick
+        :param callback: callback(name, state, Description/None) function to be called on every tick
         """
         self.name = name
         self.state = TICKING
@@ -81,11 +83,21 @@ class Timer:
         """
         return self.end - get_ctime_s()
 
+    def _create_timings(self, timings: Dict[int, str]) -> Dict[int, str]:
+        """Create real timing compare to timer end with description"""
+        return {self.end - elem[0]: elem[1] for elem in timings.items()}
+
     def tick(self):
-        """Tick timer."""
-        if self.end <= get_ctime_s():
+        """Tick timer"""
+        current_time = get_ctime_s()
+        if self.end <= current_time:
             self.state = DONE
-        self._callback(self.name, self.state)
+        for timing in self._timings.items():
+            if timing[0] <= current_time:
+                self._callback(self.name, self.state, timing[1])  # Callback with timing
+                self._timings.pop(timing[0])
+                return
+        self._callback(self.name, self.state, None)
 
 
 class ReTimer:
