@@ -74,7 +74,8 @@ class Timer:
         self.seconds = seconds
         self.start = get_ctime_s()
         self.end = self.start + self.seconds
-        self._timings = self._create_timings(timings)
+        self._base_timings = timings
+        self._timings = self._create_timings(self._base_timings)
         self._callback = callback
 
     @property
@@ -89,6 +90,13 @@ class Timer:
         if timings is not None:
             return {self.end - elem[0]: elem[1] for elem in timings.items()}
         return {}
+
+    def reload(self):
+        """Reload this timer to start condition"""
+        self.state = TICKING
+        self.start = get_ctime_s()
+        self.end = self.start + self.seconds
+        self._timings = self._create_timings(self._base_timings)
 
     def tick(self):
         """Tick timer"""
