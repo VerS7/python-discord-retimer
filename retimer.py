@@ -61,19 +61,20 @@ class Timer:
     """
 
     def __init__(self, name: str, seconds: int,
-                 callback: Callable[[str, str, Union[str, None]], Optional],
+                 callback: Callable[[str, str, int, Union[str, None]], None],
                  timings: Optional[dict] = None):
         """
         :param str name: timer name
         :param int seconds: positive int of seconds
-        :param callback: callback(name, state, Description/None) function to be called on every tick
+        :param callback: callback(name, state, seconds_remain, Description/None)
+                         function to be called on every tick
         """
         self.name = name
         self.state = TICKING
         self.seconds = seconds
         self.start = get_ctime_s()
         self.end = self.start + self.seconds
-        self._timings = timings
+        self._timings = self._create_timings(timings)
         self._callback = callback
 
     @property
@@ -83,21 +84,29 @@ class Timer:
         """
         return self.end - get_ctime_s()
 
-    def _create_timings(self, timings: Dict[int, str]) -> Dict[int, str]:
+    def _create_timings(self, timings: Dict[int, str]) -> Union[Dict[int, str], Dict]:
         """Create real timing compare to timer end with description"""
-        return {self.end - elem[0]: elem[1] for elem in timings.items()}
+        if timings is not None:
+            return {self.end - elem[0]: elem[1] for elem in timings.items()}
+        return {}
 
     def tick(self):
         """Tick timer"""
         current_time = get_ctime_s()
         if self.end <= current_time:
             self.state = DONE
+
+        if not self._timings or len(self._timings) == 0:
+            self._callback(self.name, self.state, self.last, None)
+            return
+
         for timing in self._timings.items():
             if timing[0] <= current_time:
-                self._callback(self.name, self.state, timing[1])  # Callback with timing
+                self._callback(self.name, self.state, self.last, timing[1])  # Callback with timing
                 self._timings.pop(timing[0])
                 return
-        self._callback(self.name, self.state, None)
+
+        self._callback(self.name, self.state, self.last, None)
 
 
 class ReTimer:
