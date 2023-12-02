@@ -59,6 +59,8 @@ class Timer:
     """
     Simple timer class
     """
+    __slots__ = ["name", "state", "seconds", "start", "end",
+                 "_base_timings", "_timings", "_callback"]
 
     def __init__(self, name: str, seconds: int,
                  callback: Callable[[str, str, int, Union[str, None]], None],
@@ -166,11 +168,15 @@ class ReTimer:
 
             await asyncio.sleep(self._td)
 
-    def run(self, event_loop=None):
+    def run(self, event_loop: asyncio.AbstractEventLoop = None):
         """
+        Blocking call. Use only if ReTimer loop is only one blocking non-ending loop
         :param event_loop: Asyncio event loop
         """
         if event_loop is None:
             event_loop = asyncio.get_event_loop()
-
         event_loop.run_until_complete(self._loop())
+
+    async def start(self):
+        """async _loop wrapper"""
+        return await self._loop()
