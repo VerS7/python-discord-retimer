@@ -18,3 +18,7 @@ RETIME_ARG_DESCRIPTION = "Your timer description."
 TIMER_DONE_MSG = "Time is up."
 TIMER_TICKING_MSG = "Ticking..."
 TIMER_PAUSE_MSG = "On pause."
+
+# Discord embed descriptions
+RETIMER_EMBED_TITLE = "ReTimer"
+RETIMER_EMBED_DESCRIPTION = "Timing the timings!"
