@@ -34,6 +34,55 @@ async def on_ready() -> None:
     logger.info("Bot alive!")
 
 
+@command_handler.command(name="retime", description=RETIME_DESCRIPTION, guild=guild)
+@app_commands.describe(name=RETIME_ARG_NAME, about=RETIME_ARG_DESCRIPTION, time=RETIME_ARG_TIME,
+                       role=RETIME_ARG_ROLE, timings=RETIME_ARG_TIMINGS)
+async def retime(ctx: Interaction, name: str, about: str, time: str, role: discord.Role, timings: str):
+    """
+    /retime command
+    :param Interaction ctx: discord interaction
+    -- Command args --
+        :param str name: Name of timer
+        :param str about: Description of timer
+        :param str time: Time to timer tick
+        :param Role role: Role to notice
+        :param str timings: Timings with description when timer will notice
+    """
+    try:
+        secs = time_to_secs(time)
+        timings = str_to_timings(timings)
+    except ValueError:
+        logger.exception(f"Wrong args. {time} / {timings}")
+        return
+
+    except Exception as e:
+        logger.error("ReTime command error.", e=e)
+        return
+
+    embed = ReTimerEmbed(name, about, ctx.user)
+    view = TimerView(refresh_action=lambda: reTimer.get_timer(name).reload(),
+                     stop_action=lambda: reTimer.get_timer(name).done())
+
+    await ctx.response.send_message(embed=embed, view=view)
+
+    def timer_callback(name_: str, state: str, secs_remain: int, timing_msg: Union[str, None]):
+        embed.update_state(state)
+        embed.update_time(secs_remain)
+        try:
+            bot.loop.create_task(ctx.edit_original_response(embed=embed))
+
+            if state is DONE:  # If timer work is ended, button will be deleted
+                bot.loop.create_task(ctx.edit_original_response(view=None))
+
+            if timing_msg is not None:  # If timings exist, role will be noticed
+                bot.loop.create_task(ctx.channel.send(f"{role.mention} {timing_msg}"))
+
+        except Exception as e_:
+            logger.error("Error in callback.", e=e_)
+
+    reTimer.add_timer(Timer(name, secs, timer_callback, timings))
+
+
 @bot.command(name="sync", description="Sync commands to this Discord Server")
 async def tree_sync(ctx: Interaction):
     """
