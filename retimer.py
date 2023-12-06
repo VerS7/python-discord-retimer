@@ -8,6 +8,7 @@ import asyncio
 from time import time
 from typing import List, Union, Callable, Optional, Dict
 
+
 DONE = "DONE"
 TICKING = "TICKING"
 PAUSE = "PAUSE"
@@ -19,18 +20,24 @@ TIME_UNITS = {"d": 24 * 60 * 60, "h": 60 * 60, "m": 60}
 
 def get_ctime_s():
     """
-    :return: Current time from epoch in seconds
+    :return int: Current time from epoch in seconds
     """
     return int(time())
 
 
 def validate(string: str, pattern: re.Pattern) -> bool:
-    """Validates string with pattern"""
+    """
+    Validates string with pattern
+    :param string string: string to validate
+    :param Pattern pattern: regex pattern
+    :return bool:
+    """
     return bool(pattern.match(string))
 
 
 def str_to_timings(strtimings: str) -> Dict[int, str]:
     """
+    Converts timing string to timings dict
     :param str strtimings: str with timings like 1h:-an hour, 3h:30m-A lot of time
     :return Dict[int, str]: dict of seconds and timing descriptions
     """
@@ -44,7 +51,11 @@ def str_to_timings(strtimings: str) -> Dict[int, str]:
 
 
 def time_to_secs(strtime: str) -> int:
-    """converts time string to seconds"""
+    """
+    Converts time string to seconds
+    :param str strtime: time string
+    :return int: seconds
+    """
     if not validate(strtime, TIME_PATTERN):
         raise ValueError("strtime param is incorrect.")
     secs = 0
@@ -56,7 +67,11 @@ def time_to_secs(strtime: str) -> int:
 
 
 def secs_to_strtime(secs: int) -> str:
-    """convers seconds to time string"""
+    """
+    Convert seconds to time string
+    :param int secs: seconds
+    :return str: pretty time string
+    """
     if secs < 0:
         secs = 0
 
@@ -102,7 +117,7 @@ class Timer:
     @property
     def last(self):
         """
-        :return: Seconds to last tick
+        :return int: Seconds to last tick
         """
         return self.end - get_ctime_s()
 
