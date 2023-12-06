@@ -100,6 +100,10 @@ class Timer:
         self.end = self.start + self.seconds
         self._timings = self._create_timings(self._base_timings)
 
+    def done(self):
+        """Set state to DONE"""
+        self.state = DONE
+
     def tick(self):
         """Tick timer"""
         current_time = get_ctime_s()
@@ -115,7 +119,6 @@ class Timer:
                 self._callback(self.name, self.state, self.last, timing[1])  # Callback with timing
                 self._timings.pop(timing[0])
                 return
-
         self._callback(self.name, self.state, self.last, None)
 
 
