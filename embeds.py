@@ -62,4 +62,4 @@ class ReTimerEmbed(Embed):
         :param str state: States: TICKING, DONE, PAUSE
         :return:
         """
-        self.set_field_at(1, name="State", value=state, inline=True)
+        self.set_field_at(1, name="State", value=STATES.get(state, "N/A"), inline=True)
