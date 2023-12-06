@@ -55,6 +55,25 @@ def time_to_secs(strtime: str) -> int:
     return secs
 
 
+def secs_to_strtime(secs: int) -> str:
+    """convers seconds to time string"""
+    if secs < 0:
+        secs = 0
+
+    hours, remain = divmod(secs, 3600)
+    minutes, seconds = divmod(remain, 60)
+
+    time_string = ""
+    if hours > 0:
+        time_string += f"{hours}h:"
+    if minutes > 0:
+        time_string += f"{minutes}m:"
+    if seconds > 0 or not time_string:
+        time_string += f"{seconds}s"
+
+    return time_string.rstrip(':')
+
+
 class Timer:
     """
     Simple timer class
