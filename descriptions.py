@@ -12,6 +12,7 @@ RETIME_ARG_ROLE = "Role to be noticed | Example: @everyone"
 RETIME_ARG_TIMINGS = "Timings before end when notification appears with @ message | " \
                      "Example: 1h-Hurry up! / 1h:30m-Almost ready!, 30m-Too Close... / " \
                      "3d:15h-Deadline is approaching, 2d-Hurry!, 12h:30m-Last chance..."
+RETIME_ARG_DESCRIPTION = "Your timer description."
 
 # Discord embed timer messages
 TIMER_DONE_MSG = "Time is up."
