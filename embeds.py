@@ -5,7 +5,7 @@ from dataclasses import dataclass
 
 from discord import Embed, Member
 
-from retimer import TICKING, DONE, PAUSE
+from retimer import TICKING, DONE, PAUSE, secs_to_strtime
 from descriptions import TIMER_DONE_MSG, TIMER_TICKING_MSG, TIMER_PAUSE_MSG
 
 
@@ -35,6 +35,11 @@ class ReTimerEmbed(Embed):
     """
 
     def __init__(self, name: str, description: str, author: Member):
+        """
+        :param str name: Name displayed on embed
+        :param str description: Description displayed on embed
+        :param Member author: Server member displayed on embed
+        """
         super().__init__(title=name, description=description)
         self.set_author(name=author.name, icon_url=author.avatar.url)
         self.colour = Colors.CREATED
@@ -42,10 +47,19 @@ class ReTimerEmbed(Embed):
         self.add_field(name="State", value="Waiting...", inline=True)
 
     def update_time(self, time: int):
-        self.set_field_at(0, name="Time", value=time, inline=True)
+        """
+        Update time on embed with converting to string
+        :param int time: seconds
+        """
+        self.set_field_at(0, name="Time", value=secs_to_strtime(time), inline=True)
 
     def update_color(self, color: int):
         pass
 
     def update_state(self, state: str):
+        """
+        Update state on embed
+        :param str state: States: TICKING, DONE, PAUSE
+        :return:
+        """
         self.set_field_at(1, name="State", value=state, inline=True)
