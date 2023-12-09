@@ -164,6 +164,13 @@ class ReTimer:
         self._queue: List[Timer] = []
         self._td = tick_delay
 
+    @property
+    def timers(self):
+        """
+        :return: All enqueued timers
+        """
+        return self._queue
+
     def add_timer(self, timer: Timer):
         """
         :param Timer timer: adds timer. Raise Exception if timer exists
