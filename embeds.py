@@ -41,7 +41,7 @@ class ReTimerEmbed(Embed):
         :param str description: Description displayed on embed
         :param Member author: Server member displayed on embed
         """
-        super().__init__(title=name, description=description)
+        super().__init__(title=f"__{name}__", description=description)
         self.set_author(name=author.name, icon_url=author.avatar.url)
         self.colour = Colors.CREATED
         self.add_field(name="Time", value="Waiting...", inline=True)
