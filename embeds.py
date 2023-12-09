@@ -21,12 +21,12 @@ class Colors:
     """
     Embed color types
     """
-    CREATED = 0x43708e
-    WARNING = None
-    COMPLETE = None
-    ALMOST = None
-    PROCESS = None
-    STANDBY = None
+    CREATED = 0x43708e   # Blue
+    WARNING = 0xfbdc3e   # Yellow
+    COMPLETE = 0xff2503  # Red
+    ALMOST = 0xfb8400    # Orange
+    PROCESS = 0xc2c1bf   # Gray
+    STANDBY = 0x1ec200   # Green
 
 
 class ReTimerEmbed(Embed):
