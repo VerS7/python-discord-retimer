@@ -14,6 +14,9 @@ RETIME_ARG_TIMINGS = "Timings before end when notification appears with @ messag
                      "3d:15h-Deadline is approaching, 2d-Hurry!, 12h:30m-Last chance..."
 RETIME_ARG_DESCRIPTION = "Your timer description."
 
+# Retimers command
+RETIMERS_DESCRIPTION = "Show all enqueued timers."
+
 # Discord embed timer messages
 TIMER_DONE_MSG = "Time is up."
 TIMER_TICKING_MSG = "Ticking..."
