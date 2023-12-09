@@ -68,3 +68,21 @@ class ReTimerEmbed(Embed):
         :return:
         """
         self.set_field_at(1, name="State", value=STATES.get(state, "N/A"), inline=True)
+
+
+class RetimersCommandEmbed(Embed):
+    """
+    Retimers command embed
+    """
+    def __init__(self, timers_data: dict):
+        """
+        :param timers_data: timers data from ReTimer
+        """
+        super().__init__(title=f"__Enqueued Timers__")
+        self.set_footer(text=Embed.timestamp)
+        self.colour = Colors.CREATED
+        self._register_data(timers_data)
+
+    def _register_data(self, data: dict):
+        for key in data.keys():
+            self.add_field(name=key, value=f"State: {data['state']}\nTime:  {data['time_last']}")
