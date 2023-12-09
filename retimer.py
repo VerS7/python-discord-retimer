@@ -6,8 +6,8 @@ import re
 import asyncio
 
 from time import time
+from datetime import datetime, timedelta
 from typing import List, Union, Callable, Optional, Dict
-
 
 DONE = "DONE"
 TICKING = "TICKING"
@@ -160,6 +160,7 @@ class ReTimer:
     """
     ReTimer class with async ticking loop
     """
+
     def __init__(self, tick_delay: int):
         self._queue: List[Timer] = []
         self._td = tick_delay
@@ -170,6 +171,19 @@ class ReTimer:
         :return: All enqueued timers
         """
         return self._queue
+
+    def timers_data(self) -> Union[dict, None]:
+        """
+        :return dict: timers data or None
+        """
+        if len(self._queue) == 0:
+            return None
+
+        data = {}
+        for timer in self._queue:
+            data[timer.name] = {"state": timer.state, "time_last": secs_to_strtime(timer.seconds)}
+
+        return data
 
     def add_timer(self, timer: Timer):
         """
