@@ -2,6 +2,7 @@
 Message embeds
 """
 from dataclasses import dataclass
+from typing import Union
 
 from discord import Embed, Member
 
@@ -53,8 +54,12 @@ class ReTimerEmbed(Embed):
         """
         self.set_field_at(0, name="Time", value=secs_to_strtime(time), inline=True)
 
-    def update_color(self, color: int):
-        pass
+    def update_color(self, color: Union[Colors, int]):
+        """
+        Update embed color
+        :param color: HEX color
+        """
+        self.colour = color
 
     def update_state(self, state: str):
         """
