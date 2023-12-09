@@ -37,7 +37,8 @@ async def on_ready() -> None:
 @command_handler.command(name="retime", description=RETIME_DESCRIPTION, guild=guild)
 @app_commands.describe(name=RETIME_ARG_NAME, about=RETIME_ARG_DESCRIPTION, time=RETIME_ARG_TIME,
                        role=RETIME_ARG_ROLE, timings=RETIME_ARG_TIMINGS)
-async def retime(ctx: Interaction, name: str, about: str, time: str, role: discord.Role, timings: str):
+async def retime(ctx: Interaction, name: str, about: str,
+                 time: str, role: discord.Role, timings: str):
     """
     /retime command
     :param Interaction ctx: discord interaction
