@@ -179,7 +179,9 @@ class ReTimer:
 
         data = {}
         for timer in self._queue:
-            data[timer.name] = {"state": timer.state, "time_last": secs_to_strtime(timer.seconds)}
+            data[timer.name] = {"state": timer.state,
+                                "time_last": secs_to_strtime(timer.last),
+                                "time": secs_to_strtime(timer.seconds)}
 
         return data
 
