@@ -2,12 +2,12 @@
 ReTimer
 Ticks linked to real time from epoch
 """
-import re
 import asyncio
+import re
 
-from time import time
-from datetime import datetime, timedelta
+from time import time as time_
 from typing import List, Union, Callable, Optional, Dict
+
 
 DONE = "DONE"
 TICKING = "TICKING"
@@ -22,7 +22,7 @@ def get_ctime_s():
     """
     :return int: Current time from epoch in seconds
     """
-    return int(time())
+    return int(time_())
 
 
 def validate(string: str, pattern: re.Pattern) -> bool:
@@ -72,9 +72,7 @@ def secs_to_strtime(secs: int) -> str:
     :param int secs: seconds
     :return str: pretty time string
     """
-    if secs < 0:
-        secs = 0
-
+    secs = max(secs, 0)
     hours, remain = divmod(secs, 3600)
     minutes, seconds = divmod(remain, 60)
 
