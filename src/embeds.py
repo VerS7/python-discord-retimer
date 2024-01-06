@@ -3,12 +3,12 @@ Message embeds
 """
 from dataclasses import dataclass
 from typing import Union
+from datetime import datetime
 
 from discord import Embed, Member
 
-from retimer import TICKING, DONE, PAUSE, secs_to_strtime
-from descriptions import TIMER_DONE_MSG, TIMER_TICKING_MSG, TIMER_PAUSE_MSG
-
+from .retimer import TICKING, DONE, PAUSE, secs_to_strtime
+from .descriptions import TIMER_DONE_MSG, TIMER_TICKING_MSG, TIMER_PAUSE_MSG
 
 STATES = {
     DONE: TIMER_DONE_MSG,
@@ -22,12 +22,12 @@ class Colors:
     """
     Embed color types
     """
-    CREATED = 0x43708e   # Blue
-    WARNING = 0xfbdc3e   # Yellow
+    CREATED = 0x43708e  # Blue
+    WARNING = 0xfbdc3e  # Yellow
     COMPLETE = 0xff2503  # Red
-    ALMOST = 0xfb8400    # Orange
-    PROCESS = 0xc2c1bf   # Gray
-    STANDBY = 0x1ec200   # Green
+    ALMOST = 0xfb8400  # Orange
+    PROCESS = 0xc2c1bf  # Gray
+    STANDBY = 0x1ec200  # Green
 
 
 class ReTimerEmbed(Embed):
@@ -74,15 +74,19 @@ class RetimersCommandEmbed(Embed):
     """
     Retimers command embed
     """
+
     def __init__(self, timers_data: dict):
         """
         :param timers_data: timers data from ReTimer
         """
-        super().__init__(title=f"__Enqueued Timers__")
-        self.set_footer(text=Embed.timestamp)
+        super().__init__(title="__Enqueued Timers__")
+        self.timestamp = datetime.now()
+        self.set_footer(text="\u200b")
         self.colour = Colors.CREATED
         self._register_data(timers_data)
 
     def _register_data(self, data: dict):
-        for key in data.keys():
-            self.add_field(name=key, value=f"State: {data['state']}\nTime:  {data['time_last']}")
+        for info in data.items():
+            self.add_field(name=info[0], value=f"State:  {STATES.get(info[1]['state'])}\n"
+                                               f"Time:   {info[1]['time']}\n"
+                                               f"Remain: {info[1]['time_last']}")
