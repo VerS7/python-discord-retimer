@@ -7,12 +7,12 @@ from discord import app_commands
 from discord import Interaction
 from discord.ext import commands
 
-from configs import TOKEN, GUILD_ID, TIMER_TICK_COOLDOWN
-from views import TimerView
-from embeds import ReTimerEmbed
+from src.configs import TOKEN, GUILD_ID, TIMER_TICK_COOLDOWN
+from src.views import TimerView
+from src.embeds import ReTimerEmbed, RetimersCommandEmbed
 
-from retimer import *
-from descriptions import *
+from src.retimer import *
+from src.descriptions import *
 
 from loguru import logger
 
@@ -82,6 +82,19 @@ async def retime(ctx: Interaction, name: str, about: str,
             logger.error("Error in callback.", e=e_)
 
     reTimer.add_timer(Timer(name, secs, timer_callback, timings))
+
+
+@command_handler.command(name="retimers", description=RETIMERS_DESCRIPTION, guild=guild)
+async def retimers(ctx: Interaction):
+    """
+    /retimers command
+    :param Interaction ctx: discord interaction
+    """
+    timers_data = reTimer.timers_data()
+    if timers_data is None:
+        await ctx.response.send_message("No timers in queue!")
+    else:
+        await ctx.response.send_message(embed=RetimersCommandEmbed(timers_data))
 
 
 @bot.command(name="sync", description="Sync commands to this Discord Server")
